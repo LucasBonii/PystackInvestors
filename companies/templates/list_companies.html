@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'head' %}
+
+<link rel="stylesheet" href="{% static 'businessman/css/list_companies.css' %}">
+<link rel="stylesheet" href="{% static 'users/css/users.css' %}">
+
+{% endblock 'head' %}
+
+
+{% block 'body' %}
+    {% include "partials/navbar.html" %}
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <form action="{% url 'list_companies' %}" method="GET">
+                <label>Empresa</label>
+                <input type="text" name="empresa" class="form-control" placeholder="Busque por uma empresa em específico">
+            </div>
+            <div class="col-md">
+                <br>
+                <input type="submit" value="filtrar" class="btn btn-outline-primary">
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <br>
+    <div class="container dark-color container_empresas">
+        <table class="table">
+            <thead >
+              <tr class="cabecalho" style="background-color: transparent !important;">
+                <th class="cabecalho" scope="col">Nome</th>
+                <th class="cabecalho" scope="col">Percentual captado</th>
+                <th class="cabecalho" scope="col">Status</th>
+                <th class="cabecalho" scope="col">Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+                
+                    <tr class="linha">
+                        <td class="linha">Empresa</td>
+                        <td class="linha">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                        <td class="linha">Status</td>
+                        <td class="linha"><a href="#" class="btn btn-indigo-normal">Abrir</a></td>
+                    </tr>
+                
+                
+                    
+              
+            </tbody>
+          </table>
+
+    </div>
+{% endblock 'body' %}
