@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'companies',
+    'investors',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,6 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
     constants.WARNING: 'alert-warning',
 }
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL='login'

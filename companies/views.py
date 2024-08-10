@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Company
+from .models import Company, Document, Metrics
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required
 def register_company(request):
     if request.method == "GET":
 
@@ -49,10 +51,85 @@ def register_company(request):
         
         messages.add_message(request, constants.SUCCESS, 'Empresa criada com sucesso!')
         return redirect('register_company')
+
+
+@login_required
+def list_companies(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.method == "GET":
+        companies = Company.objects.filter(user=request.user)
+        print(companies)
+        context = {"companies": companies}
+        return render(request, 'list_companies.html', context)
+        
+
+@login_required
+def company_details(request, id):
+    company = Company.objects.get(id=id)
+    if company.user != request.user:
+        messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+        return redirect('list_companies')
+      
+    if request.method == "GET":
+        documents = Document.objects.filter(company=company)
+        context = {"company": company, "documents": documents}
+        return render(request, 'company_details.html', context)
     
 
-def list_companies(request):
-    if request.method == "GET":
-        return render(request, 'list_companies.html')
-        
-           
+@login_required    
+def add_doc(request, id):
+    company = Company.objects.get(id=id)
+    title = request.POST.get('title')
+    file = request.FILES.get('file')
+    extension = file.name.split('.')
+
+    if company.user != request.user:
+        messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+        return redirect('list_companies')  
+    
+    if extension[1] != "pdf":
+        messages.add_message(request, constants.ERROR, "Envie apenas PDF's")
+        return redirect('company_details', id)  
+
+    if not file:
+        messages.add_message(request, constants.ERROR, 'Selecione um arquivo')
+        return redirect('company_details', id)
+
+    document = Document(
+        company=company, 
+        title=title, 
+        file=file)
+    document.save()
+    messages.add_message(request, constants.SUCCESS, 'Documento cadastrado com sucesso')
+    return redirect('company_details', id)
+
+
+def delete_doc(request, id):
+    document = Document.objects.get(id=id)
+    if document.company.user != request.user:
+        messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+        return redirect('list_companies') 
+    document.delete()
+    messages.add_message(request, constants.SUCCESS, 'Documento deletado com sucesso')
+    return redirect('company_details', document.company.id)
+
+
+def add_metric(request, id):
+    company = Company.objects.get(id=id)
+    title = request.POST.get('metric_title')
+    value = request.POST.get('metric_value')
+
+    if company.user != request.user:
+        messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+        return redirect('list_companies')
+    
+    metric = Metrics(
+        company = company,
+        title = title,
+        value = value
+    )
+    metric.save
+
+    messages.add_message(request, constants.SUCCESS, 'Documento deletado com sucesso')
+    return redirect('company_details', company.id)

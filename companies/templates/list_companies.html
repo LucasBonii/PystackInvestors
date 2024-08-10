@@ -38,18 +38,18 @@
               </tr>
             </thead>
             <tbody>
-                
+                {% for company in companies %}
                     <tr class="linha">
-                        <td class="linha">Empresa</td>
+                        <td class="linha">{{ company.name }}</td>
                         <td class="linha">
                             <div class="progress">
                                 <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </td>
-                        <td class="linha">Status</td>
-                        <td class="linha"><a href="#" class="btn btn-indigo-normal">Abrir</a></td>
+                        <td class="linha">{{ company.status }}</td>
+                        <td class="linha"><a href="{% url "company_details" company.id %}" class="btn btn-indigo-normal">Abrir</a></td>
                     </tr>
-                
+                {% endfor %}
                 
                     
               
