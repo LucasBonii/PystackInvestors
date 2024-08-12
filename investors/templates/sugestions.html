@@ -60,7 +60,7 @@
                         <div class="card-body dark-color">
                         <h5 class="card-title">{{company.nome}}</h5>
                         <p class="card-text">{{company.descricao}}</p>
-                        <a href="#" class="btn btn-indigo">Acessar</a>
+                        <a href="{% url "inspect_company" company.id %}" class="btn btn-indigo">Acessar</a>
                         </div>
                     </div>
                 </div>

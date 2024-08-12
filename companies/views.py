@@ -3,7 +3,8 @@ from .models import Company, Document, Metrics
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.contrib.auth.decorators import login_required
-# Create your views here.
+from investors.models import InvestmentProposal
+
 
 @login_required
 def register_company(request):
@@ -73,7 +74,20 @@ def company_details(request, id):
       
     if request.method == "GET":
         documents = Document.objects.filter(company=company)
-        context = {"company": company, "documents": documents}
+        inv_prop = InvestmentProposal.objects.filter(company=company)
+        inv_prop_sent = inv_prop.filter(status='PE')
+
+        percentual_sold = 0
+        for prop in inv_prop:
+            if prop.status == "PA":
+                percentual_sold += prop.percentual
+        
+        total_cap =  sum(inv_prop.filter(status="PA").values_list('value', flat=True))
+
+        actual_valuation = (100 * float(total_cap)) / float(percentual_sold) if percentual_sold != 0 else 0
+
+        context = {"company": company, "documents": documents, "inv_prop_sent": inv_prop_sent, "percentual_sold":int(percentual_sold), 
+                   "total_cap": total_cap, "actual_valuation": actual_valuation}
         return render(request, 'company_details.html', context)
     
 
@@ -105,6 +119,7 @@ def add_doc(request, id):
     return redirect('company_details', id)
 
 
+@login_required
 def delete_doc(request, id):
     document = Document.objects.get(id=id)
     if document.company.user != request.user:
@@ -115,6 +130,7 @@ def delete_doc(request, id):
     return redirect('company_details', document.company.id)
 
 
+@login_required
 def add_metric(request, id):
     company = Company.objects.get(id=id)
     title = request.POST.get('metric_title')
@@ -133,3 +149,6 @@ def add_metric(request, id):
 
     messages.add_message(request, constants.SUCCESS, 'Documento deletado com sucesso')
     return redirect('company_details', company.id)
+
+
+
