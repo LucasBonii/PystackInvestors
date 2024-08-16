@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path('usuarios/', include('users.urls')),
     path('empresas/', include('companies.urls')),
     path('investidores/', include('investors.urls')),
+    path('', lambda request: redirect('register_company'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

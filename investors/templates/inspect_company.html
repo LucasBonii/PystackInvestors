@@ -63,20 +63,14 @@
                 <h4 style="color: #92D5EB">Indicadores |</h4>
                 
                 <div class="row">
-                    <div class="col-md-3" >
-                        <div class="dark-color" style="padding: 20px; text-align: center;">
-                            <h5>CAC</h5>
-                            <h6>R$ 200</h6>
+                    {% for metric in metrics %}
+                        <div class="col-md-3" >
+                            <div class="dark-color" style="padding: 20px; text-align: center;">
+                                <h5>{{ metric.title }}</h5>
+                                <h6>R$ {{ metric.value }}</h6>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3" >
-                        <div class="dark-color" style="padding: 20px; text-align: center;">
-                            <h5>CAC</h5>
-                            <h6>R$ 200</h6>
-                        </div>
-                    </div>
-                    
-                  
+                    {% endfor %}
                 </div>
 
                 <hr>

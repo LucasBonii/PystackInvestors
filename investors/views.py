@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from companies.models import Company, Document
+from companies.models import Company, Document, Metrics
 from .models import InvestmentProposal
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -22,6 +22,8 @@ def sugestions(request):
             companies = Company.objects.filter(existence_time='+5').filter(phase='E')
         elif investor_type == 'D':
             companies = Company.objects.filter(existence_time__in=['-6', '+6', '+1']).exclude(phase='E')
+        elif investor_type == 'G':
+            companies = Company.objects.all()
 
         companies = companies.filter(area__in=area)
 
@@ -47,9 +49,11 @@ def inspect_company(request, id):
     if percentual_sold >= limiar:
         concretizado =True
 
+    metrics = Metrics.objects.filter(company)
 
     percentual_disponivel = company.percentual_equity - percentual_sold
-    context = {"company": company, "percentual_sold": int(percentual_sold), "concretizado": concretizado, "percentual_disponivel": percentual_disponivel}
+    context = {"company": company, "percentual_sold": int(percentual_sold), "concretizado": concretizado, "percentual_disponivel": percentual_disponivel,
+               "documents": documents, "metrics": metrics}
     return render(request, 'inspect_company.html', context)
 
 

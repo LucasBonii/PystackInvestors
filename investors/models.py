@@ -17,6 +17,7 @@ class InvestmentProposal(models.Model):
     status = models.CharField(max_length=2, choices=status_choices, default='AS')
     selfie = models.FileField(upload_to="selfie", null=True, blank=True)
     rg = models.FileField(upload_to="rg", null=True, blank=True)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return str(self.value)

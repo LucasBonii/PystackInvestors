@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from django.contrib.auth.decorators import login_required
 from investors.models import InvestmentProposal
-
+from datetime import timedelta
+from django.utils import timezone
 
 @login_required
 def register_company(request):
@@ -56,12 +57,12 @@ def register_company(request):
 
 @login_required
 def list_companies(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
     if request.method == "GET":
+        company_name  = request.GET.get('company')
         companies = Company.objects.filter(user=request.user)
-        print(companies)
-        context = {"companies": companies}
+        if company_name:
+            companies = companies.filter(name__icontains=company_name)
+        context = {"companies": companies, "company_name": company_name}
         return render(request, 'list_companies.html', context)
         
 
@@ -151,4 +152,29 @@ def add_metric(request, id):
     return redirect('company_details', company.id)
 
 
+def dashbord(request, id):
+    company = Company.objects.get(id=id)
+    today = timezone.now().date()
 
+    seven_days_ago = today - timedelta(days=6)
+
+    proposals_by_day = {}
+
+    for i in range(7):
+        day = seven_days_ago + timedelta(days=i)
+
+        proposals = InvestmentProposal.objects.filter(
+            company = company,
+            status = "PA",
+            date = day
+        )
+        
+        total_day = 0
+        for proposal in proposals:
+            total_day += proposal.value
+
+        proposals_by_day[day.strftime("%d/%m/%Y")] = int(total_day)
+    
+    context = {'labels': list(proposals_by_day.keys()), 'values': list(proposals_by_day.values())}
+    
+    return render(request, 'dashbord.html', context)

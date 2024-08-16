@@ -3,10 +3,13 @@
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-	            <a class="nav-link active" aria-current="page" href="">Marketplace</a>
+	            <a class="nav-link active" aria-current="page" href="{% url 'sugestions' %}">Marketplace</a>
             </li>
             <li class="nav-item">
 	            <a class="nav-link active" href="{% url 'register_company' %}">Quero captar</a>
+            </li>
+            <li class="nav-item">
+	            <a class="nav-link active" href="{% url 'list_companies' %}">Minhas empresas</a>
             </li>
         </ul>
         </div>
