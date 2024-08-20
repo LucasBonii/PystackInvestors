@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from investors.models import InvestmentProposal
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import Sum
 
 @login_required
 def register_company(request):
@@ -86,9 +87,12 @@ def company_details(request, id):
         total_cap =  sum(inv_prop.filter(status="PA").values_list('value', flat=True))
 
         actual_valuation = (100 * float(total_cap)) / float(percentual_sold) if percentual_sold != 0 else 0
+        
+
+        number_of_investors = InvestmentProposal.objects.filter(company=company, status='PA').values('investor').distinct().count()
 
         context = {"company": company, "documents": documents, "inv_prop_sent": inv_prop_sent, "percentual_sold":int(percentual_sold), 
-                   "total_cap": total_cap, "actual_valuation": actual_valuation}
+                   "total_cap": total_cap, "actual_valuation": actual_valuation, "number_of_investors": number_of_investors}
         return render(request, 'company_details.html', context)
     
 
@@ -152,8 +156,12 @@ def add_metric(request, id):
     return redirect('company_details', company.id)
 
 
+@login_required
 def dashbord(request, id):
     company = Company.objects.get(id=id)
+    if company.user != request.user:
+        messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+        return redirect('list_companies') 
     today = timezone.now().date()
 
     seven_days_ago = today - timedelta(days=6)
@@ -178,3 +186,20 @@ def dashbord(request, id):
     context = {'labels': list(proposals_by_day.keys()), 'values': list(proposals_by_day.values())}
     
     return render(request, 'dashbord.html', context)
+
+
+@login_required
+def list_investors(request, id):
+    try:
+        company = Company.objects.get(id=id)
+        if company.user != request.user:
+            messages.add_message(request, constants.ERROR, "Essa empresa não é sua")
+            return redirect('list_companies') 
+        investors = (InvestmentProposal.objects.filter(company=company, status='PA').values('investor__username').annotate(percentual=Sum('percentual')))
+        
+        context = {'company': company, 'investors': investors}
+    except:
+        return redirect('dashbord', id)
+
+    return render(request, 'list_investor.html', context)
+

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'head' %}
+
+<link rel="stylesheet" href="{% static 'businessman/css/list_companies.css' %}">
+<link rel="stylesheet" href="{% static 'users/css/users.css' %}">
+
+{% endblock 'head' %}
+
+
+{% block 'body' %}
+    {% include "partials/navbar.html" %}
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h1>{{ company.name }}</h1>
+            </div>
+        </div>
+
+    </div>
+    <br>
+    <div class="container dark-color container_empresas">
+        <table class="table">
+            <thead >
+              <tr class="cabecalho" style="background-color: transparent !important;">
+                <th class="cabecalho" scope="col">Nome</th>
+                <th class="cabecalho" scope="col">Percentual captado</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for investor in investors %}
+                    <tr class="linha">
+                        <td class="linha">{{ investor.investor__username }}</td>
+                        <td class="linha">{{ investor.percentual }}%</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+          </table>
+
+    </div>
+{% endblock 'body' %}

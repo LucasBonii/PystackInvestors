@@ -3,8 +3,12 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
 from django.contrib.messages import constants
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('register_company')
     if request.method == "GET":
         return render(request, 'register.html')
     elif request.method == "POST":
@@ -34,6 +38,9 @@ def register(request):
         return redirect('login')
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('register_company')
+
     if request.method == "GET":
         return render(request, 'login.html')
     elif request.method == "POST":
@@ -44,6 +51,13 @@ def login(request):
 
         if user:
             auth.login(request, user)
-            return redirect('cadastrar_empresa')
+            return redirect('register_company')
         messages.add_message(request, constants.ERROR, "Usuário ou senha inválidos")
         return redirect('login')
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+    

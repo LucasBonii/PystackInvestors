@@ -28,7 +28,7 @@
                         <img src="{{ company.logo.url }}" class="foto-empresa" alt="">
                     </div>
                     <div class="col-md">
-                        <h3>Percentual captado</h3>
+                        <h3>R${{total_cap}} captados</h3>
                         <h2>{{ company.name }}</h2>
                         <a href="{% url "dashbord" company.id %}"><p>Dashbord</p></a>
                         
@@ -38,8 +38,8 @@
                 <br><br>
                 <div class="row">
                     <div class="col-md">
-                        <h2 class="titulo2">XYZ Investidores</h2>
-                        <a href="#" class="sub-fonte">Ver investidores</a>
+                        <h2 class="titulo2">{{ number_of_investors }} Investidores</h2>
+                        <a href="{% url "list_investors" company.id %}" class="sub-fonte">Ver investidores</a>
                     </div>
                     <div class="col-md">
                         <h2 class="titulo2">{{ total_cap }} Captados</h2>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-md">
                         <h5>Valuation</h5>
-                        <span class="sub-fonte">Atual: 000</span>
+                        <span class="sub-fonte">Atual: {{ actual_valuation }}</span>
                         <br>
                         <span class="sub-fonte">Esperado: {{ company.valuation }}</span>
                     </div>
