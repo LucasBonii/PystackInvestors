@@ -18,7 +18,7 @@
 - **HTML/CSS**: Frontend technologies for user interface.
 
 
-# ___________________________________________________________________________
+# 
 # PT-BR
   
 **O PystackInvestor** é um projeto desenvolvido em Python e Django durante a PystackWeek da Pythonando, que visa conectar startups com investidores em potencial. A plataforma permite que startups apresentem seus produtos/serviços e que investidores encontrem oportunidades alinhadas com seus objetivos de investimento.
